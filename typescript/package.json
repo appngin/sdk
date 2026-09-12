@@ -10,7 +10,8 @@
 		"directory": "typescript"
 	},
 	"publishConfig": {
-		"access": "public"
+		"access": "public",
+		"registry": "https://npm.pkg.github.com"
 	},
 	"files": ["dist", "README.md", "CHANGELOG.md"],
 	"exports": {

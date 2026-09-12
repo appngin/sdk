@@ -24,6 +24,7 @@ release workflow after it verifies the API-provided version and canonical
 SHA-256 hash.
 
 The `api` repository triggers `.github/workflows/release.yml` with a
-`repository_dispatch` event. Configure an `NPM_TOKEN` secret for publishing
-the TypeScript package; future language packages can add their own publishing
-credentials and release steps without moving Node/Bun tooling to the root.
+`repository_dispatch` event. The TypeScript package is published to GitHub
+Packages using the workflow's `GITHUB_TOKEN`; future language packages can add
+their own publishing credentials and release steps without moving Node/Bun
+tooling to the root.
