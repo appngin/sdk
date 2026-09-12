@@ -1,0 +1,44 @@
+{
+	"name": "@appngin/sdk",
+	"version": "0.0.1",
+	"description": "TypeScript SDK for the AppNgin API.",
+	"type": "module",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/appngin/sdk.git",
+		"directory": "typescript"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"files": ["dist", "README.md", "CHANGELOG.md"],
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js"
+		},
+		"./generated": {
+			"types": "./dist/generated/index.d.ts",
+			"import": "./dist/generated/index.js"
+		}
+	},
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"scripts": {
+		"generate": "openapi-ts -i ../spec/openapi.json -o ./src/generated -c @hey-api/client-fetch",
+		"build": "bun run generate && bunx tsc -p tsconfig.json",
+		"test": "bun test",
+		"prepack": "bun run build",
+		"pack": "bun run build && bun pm pack --dry-run --ignore-scripts",
+		"contract:fetch": "bun run scripts/fetch-contract.ts",
+		"version:set": "bun run scripts/set-sdk-version.ts",
+		"contract:lint": "bunx redocly lint ../spec/openapi.json"
+	},
+	"devDependencies": {
+		"@types/bun": "^1.4.2",
+		"@hey-api/openapi-ts": "^0.99.0",
+		"@redocly/cli": "^2.52.1",
+		"typescript": "^5.9.3"
+	}
+}
