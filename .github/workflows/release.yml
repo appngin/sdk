@@ -12,7 +12,7 @@ on:
       openapi_url:
         description: OpenAPI contract URL
         required: true
-        default: https://api.appngin.com/v1/openapi/latest.json
+        default: https://api.appngin.com/v1/openapi.json
         type: string
       api_discovery_url:
         description: API discovery URL used to verify the deployed version

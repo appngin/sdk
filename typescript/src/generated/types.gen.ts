@@ -201,7 +201,7 @@ export type OpenapiLatestData = {
     body?: never;
     path?: never;
     query?: never;
-    url: '/v1/openapi/latest.json';
+    url: '/v1/openapi.json';
 };
 
 export type OpenapiLatestErrors = {

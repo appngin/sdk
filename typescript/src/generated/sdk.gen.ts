@@ -41,4 +41,4 @@ export const discover = <ThrowOnError extends boolean = false>(options?: Options
 /**
  * Get the latest OpenAPI schema
  */
-export const openapiLatest = <ThrowOnError extends boolean = false>(options?: Options<OpenapiLatestData, ThrowOnError>): RequestResult<OpenapiLatestResponses, OpenapiLatestErrors, ThrowOnError> => (options?.client ?? client).get<OpenapiLatestResponses, OpenapiLatestErrors, ThrowOnError>({ url: '/v1/openapi/latest.json', ...options });
+export const openapiLatest = <ThrowOnError extends boolean = false>(options?: Options<OpenapiLatestData, ThrowOnError>): RequestResult<OpenapiLatestResponses, OpenapiLatestErrors, ThrowOnError> => (options?.client ?? client).get<OpenapiLatestResponses, OpenapiLatestErrors, ThrowOnError>({ url: '/v1/openapi.json', ...options });

@@ -1,37 +1,33 @@
-# AppNgin SDKs
+# AppNgin SDK
 
-Official client SDKs for the AppNgin API.
+The official SDK for integrating applications with the AppNgin API.
 
-Each SDK is generated from the public OpenAPI contract served by the API:
+## TypeScript
 
-<https://api.appngin.com/v1/openapi/latest.json>
+Install the public package from npm:
 
-The API repository is the release authority. A release dispatches the
-generation workflow here with the expected API version and canonical contract
-hash. The generated source and the exact OpenAPI response are committed to the
-SDK release tag for reproducibility.
+```sh
+npm install @appnginhq/sdk
+```
 
-## SDKs
+Create a client and request the AppNgin catalog:
 
-- [TypeScript](./typescript/README.md)
+```ts
+import { createAppNginClient } from "@appnginhq/sdk";
 
-Additional languages can be added as independent packages under this
-repository without changing the API release process.
+const appngin = createAppNginClient({
+	baseUrl: "https://api.appngin.com",
+});
 
-Language-specific source, dependencies, and build tooling stay inside each
-package directory. The shared `spec/openapi.json` file is replaced by the
-release workflow after it verifies the API-provided version and canonical
-SHA-256 hash.
+const response = await appngin.catalog.list({
+	query: { category: "photos" },
+});
 
-The `api` repository triggers `.github/workflows/release.yml` with a
-`repository_dispatch` event. The TypeScript package is published publicly to
-the npm registry as `@appnginhq/sdk`; future language packages can add their
-own release steps without moving Node/Bun tooling to the root.
+console.log(response.data);
+```
 
-## Publishing setup
+See the [TypeScript integration guide](./typescript/README.md) for the available
+client methods and exported types.
 
-Configure `@appnginhq/sdk` on npm with the GitHub trusted publisher for the
-`appngin/sdk` repository and `release.yml` workflow. The workflow uses OIDC for
-normal releases. For the first publish, before the package exists and can have
-a trusted publisher, add a granular npm automation token as the repository
-secret `NPM_TOKEN`. Remove that secret after trusted publishing is configured.
+The SDK is generated from the public AppNgin
+[OpenAPI contract](https://api.appngin.com/v1/openapi.json).
