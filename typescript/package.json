@@ -1,5 +1,5 @@
 {
-	"name": "@appngin/sdk",
+	"name": "@appnginhq/sdk",
 	"version": "0.0.1",
 	"description": "TypeScript SDK for the AppNgin API.",
 	"type": "module",
@@ -11,7 +11,7 @@
 	},
 	"publishConfig": {
 		"access": "public",
-		"registry": "https://npm.pkg.github.com"
+		"registry": "https://registry.npmjs.org"
 	},
 	"files": ["dist", "README.md", "CHANGELOG.md"],
 	"exports": {
@@ -28,8 +28,9 @@
 	"types": "./dist/index.d.ts",
 	"scripts": {
 		"generate": "openapi-ts -i ../spec/openapi.json -o ./src/generated -c @hey-api/client-fetch",
-		"build": "bun run generate && bunx tsc -p tsconfig.json",
+		"build": "bun run generate && bunx tsc -p tsconfig.json && bun build src/index.ts --outdir dist --target browser --format esm --sourcemap=external && bun build src/generated/index.ts --outdir dist/generated --target browser --format esm --sourcemap=external",
 		"test": "bun test",
+		"test:package": "node scripts/smoke-package.mjs",
 		"prepack": "bun run build",
 		"pack": "bun run build && bun pm pack --dry-run --ignore-scripts",
 		"contract:fetch": "bun run scripts/fetch-contract.ts",
@@ -41,5 +42,12 @@
 		"@hey-api/openapi-ts": "^0.99.0",
 		"@redocly/cli": "^2.52.1",
 		"typescript": "^5.9.3"
-	}
+	},
+	"keywords": [
+		"appngin",
+		"sdk",
+		"typescript",
+		"cloud",
+		"http"
+	]
 }

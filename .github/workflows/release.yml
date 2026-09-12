@@ -26,7 +26,7 @@ on:
 
 permissions:
   contents: write
-  packages: write
+  id-token: write
 
 concurrency:
   group: sdk-release
@@ -49,11 +49,11 @@ jobs:
         with:
           bun-version: 1.3.13
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: 22
-          registry-url: https://npm.pkg.github.com
-          scope: "@appngin"
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+          package-manager-cache: false
       - name: Install dependencies
         run: bun install --frozen-lockfile
       - name: Resolve release metadata
@@ -104,21 +104,29 @@ jobs:
         run: bun run build
       - name: Test SDK
         run: bun run test
+      - name: Test built package exports
+        run: bun run test:package
       - name: Verify generated source
         run: git diff --exit-code -- src/generated
-      - name: Check whether release already exists
+      - name: Check existing release state
         id: existing
         env:
           API_VERSION: ${{ steps.metadata.outputs.api_version }}
         run: |
           if git ls-remote --exit-code --tags origin "refs/tags/v${API_VERSION}" >/dev/null 2>&1; then
-            echo "exists=true" >> "$GITHUB_OUTPUT"
-            echo "Release v${API_VERSION} already exists; nothing to publish."
+            echo "tag_exists=true" >> "$GITHUB_OUTPUT"
+            echo "Git tag v${API_VERSION} already exists."
           else
-            echo "exists=false" >> "$GITHUB_OUTPUT"
+            echo "tag_exists=false" >> "$GITHUB_OUTPUT"
+          fi
+          if npm view "@appnginhq/sdk@${API_VERSION}" version --registry=https://registry.npmjs.org >/dev/null 2>&1; then
+            echo "package_exists=true" >> "$GITHUB_OUTPUT"
+            echo "@appnginhq/sdk@${API_VERSION} already exists on npm."
+          else
+            echo "package_exists=false" >> "$GITHUB_OUTPUT"
           fi
       - name: Commit contract and generated SDK
-        if: steps.existing.outputs.exists != 'true'
+        if: steps.existing.outputs.tag_exists != 'true'
         env:
           API_VERSION: ${{ steps.metadata.outputs.api_version }}
         run: |
@@ -131,7 +139,7 @@ jobs:
             git commit -m "chore: release TypeScript SDK v${API_VERSION}"
           fi
       - name: Push release commit and tag
-        if: steps.existing.outputs.exists != 'true'
+        if: steps.existing.outputs.tag_exists != 'true'
         env:
           API_VERSION: ${{ steps.metadata.outputs.api_version }}
         run: |
@@ -139,7 +147,7 @@ jobs:
           git tag "v${API_VERSION}"
           git push origin "v${API_VERSION}"
       - name: Publish TypeScript package
-        if: steps.existing.outputs.exists != 'true'
+        if: steps.existing.outputs.package_exists != 'true'
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: npm publish --access public

@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "@appngin/sdk",
+      "name": "@appnginhq/sdk",
       "devDependencies": {
         "@hey-api/openapi-ts": "^0.99.0",
         "@redocly/cli": "^2.52.1",

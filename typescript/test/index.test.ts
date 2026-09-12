@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { createAppNginClient } from "../src";
 
-describe("@appngin/sdk", () => {
+describe("@appnginhq/sdk", () => {
 	test("creates a configured client and serializes catalog queries", async () => {
 		let requestedUrl = "";
 		const client = createAppNginClient({

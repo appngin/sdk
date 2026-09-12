@@ -24,7 +24,14 @@ release workflow after it verifies the API-provided version and canonical
 SHA-256 hash.
 
 The `api` repository triggers `.github/workflows/release.yml` with a
-`repository_dispatch` event. The TypeScript package is published to GitHub
-Packages using the workflow's `GITHUB_TOKEN`; future language packages can add
-their own publishing credentials and release steps without moving Node/Bun
-tooling to the root.
+`repository_dispatch` event. The TypeScript package is published publicly to
+the npm registry as `@appnginhq/sdk`; future language packages can add their
+own release steps without moving Node/Bun tooling to the root.
+
+## Publishing setup
+
+Configure `@appnginhq/sdk` on npm with the GitHub trusted publisher for the
+`appngin/sdk` repository and `release.yml` workflow. The workflow uses OIDC for
+normal releases. For the first publish, before the package exists and can have
+a trusted publisher, add a granular npm automation token as the repository
+secret `NPM_TOKEN`. Remove that secret after trusted publishing is configured.

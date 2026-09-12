@@ -1,30 +1,20 @@
-# @appngin/sdk
+# @appnginhq/sdk
 
 The official TypeScript SDK for the AppNgin API.
 
-## Install from GitHub Packages
-
-Create an `.npmrc` entry for the `@appngin` scope and authenticate with a
-GitHub classic personal access token that has `read:packages` access:
-
-```ini
-@appngin:registry=https://npm.pkg.github.com
-//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}
-```
-
-Then install the package:
+## Install
 
 ```sh
-npm install @appngin/sdk
+npm install @appnginhq/sdk
 ```
 
-After the first release, set the package visibility to **Public** in the
-repository's GitHub Packages settings if it is not made public automatically.
+The package is public on the npm registry and does not require authentication
+to install.
 
 ## Usage
 
 ```ts
-import { createAppNginClient } from "@appngin/sdk";
+import { createAppNginClient } from "@appnginhq/sdk";
 
 const client = createAppNginClient({
 	baseUrl: "https://api.appngin.com",
