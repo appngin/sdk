@@ -13,7 +13,11 @@
 		"access": "public",
 		"registry": "https://npm.pkg.github.com"
 	},
-	"files": ["dist", "README.md", "CHANGELOG.md"],
+	"files": [
+		"dist",
+		"README.md",
+		"CHANGELOG.md"
+	],
 	"exports": {
 		".": {
 			"types": "./dist/index.d.ts",
