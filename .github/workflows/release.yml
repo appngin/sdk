@@ -153,6 +153,4 @@ jobs:
           git push origin "v${API_VERSION}"
       - name: Publish TypeScript package
         if: steps.existing.outputs.package_exists != 'true'
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: npm publish --access public
