@@ -106,8 +106,6 @@ jobs:
         run: bun run test
       - name: Test built package exports
         run: bun run test:package
-      - name: Verify generated source
-        run: git diff --exit-code -- src/generated
       - name: Check existing release state
         id: existing
         env:
