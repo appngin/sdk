@@ -9,10 +9,9 @@ on:
         description: API/SDK version to release
         required: true
         type: string
-      openapi_url:
-        description: OpenAPI contract URL
+      api_commit:
+        description: Commit in appngin/api containing the released contract
         required: true
-        default: https://api.appngin.com/v1/openapi.json
         type: string
       api_discovery_url:
         description: API discovery URL used to verify the deployed version
@@ -60,37 +59,45 @@ jobs:
         id: metadata
         env:
           DISPATCH_VERSION: ${{ github.event.client_payload.api_version }}
-          DISPATCH_URL: ${{ github.event.client_payload.openapi_url }}
+          DISPATCH_COMMIT: ${{ github.event.client_payload.api_commit }}
           DISPATCH_DISCOVERY_URL: ${{ github.event.client_payload.api_discovery_url }}
           DISPATCH_SHA256: ${{ github.event.client_payload.openapi_sha256 }}
           INPUT_VERSION: ${{ inputs.api_version }}
-          INPUT_URL: ${{ inputs.openapi_url }}
+          INPUT_COMMIT: ${{ inputs.api_commit }}
           INPUT_DISCOVERY_URL: ${{ inputs.api_discovery_url }}
           INPUT_SHA256: ${{ inputs.openapi_sha256 }}
         run: |
           if [[ "${{ github.event_name }}" == "repository_dispatch" ]]; then
             api_version="$DISPATCH_VERSION"
-            openapi_url="$DISPATCH_URL"
+            api_commit="$DISPATCH_COMMIT"
             api_discovery_url="$DISPATCH_DISCOVERY_URL"
             openapi_sha256="$DISPATCH_SHA256"
           else
             api_version="$INPUT_VERSION"
-            openapi_url="$INPUT_URL"
+            api_commit="$INPUT_COMMIT"
             api_discovery_url="$INPUT_DISCOVERY_URL"
             openapi_sha256="$INPUT_SHA256"
           fi
-          [[ -n "$api_version" && -n "$openapi_url" && -n "$api_discovery_url" && -n "$openapi_sha256" ]] || {
+          [[ -n "$api_version" && -n "$api_commit" && -n "$api_discovery_url" && -n "$openapi_sha256" ]] || {
             echo "Release metadata is incomplete" >&2
             exit 1
           }
           echo "api_version=$api_version" >> "$GITHUB_OUTPUT"
-          echo "openapi_url=$openapi_url" >> "$GITHUB_OUTPUT"
+          echo "api_commit=$api_commit" >> "$GITHUB_OUTPUT"
           echo "api_discovery_url=$api_discovery_url" >> "$GITHUB_OUTPUT"
           echo "openapi_sha256=$openapi_sha256" >> "$GITHUB_OUTPUT"
-      - name: Fetch and verify API contract
+      - name: Check out released API contract
+        uses: actions/checkout@v4
+        with:
+          repository: appngin/api
+          ref: ${{ steps.metadata.outputs.api_commit }}
+          token: ${{ secrets.API_REPO_READ_TOKEN }}
+          path: api-source
+          persist-credentials: false
+      - name: Verify released API contract
         env:
           API_VERSION: ${{ steps.metadata.outputs.api_version }}
-          OPENAPI_URL: ${{ steps.metadata.outputs.openapi_url }}
+          OPENAPI_PATH: ../api-source/generated/openapi.json
           API_DISCOVERY_URL: ${{ steps.metadata.outputs.api_discovery_url }}
           OPENAPI_SHA256: ${{ steps.metadata.outputs.openapi_sha256 }}
         run: bun run contract:fetch

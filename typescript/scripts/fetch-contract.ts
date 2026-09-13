@@ -1,7 +1,8 @@
 import { createHash } from "node:crypto";
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 
 const url = process.env.OPENAPI_URL;
+const path = process.env.OPENAPI_PATH;
 const discoveryUrl = process.env.API_DISCOVERY_URL;
 const expectedVersion = process.env.API_VERSION;
 const expectedSha256 = process.env.OPENAPI_SHA256;
@@ -22,14 +23,25 @@ const canonicalize = (value: unknown): unknown => {
 	return value;
 };
 
-if (!url || !discoveryUrl || !expectedVersion || !expectedSha256) {
+if ((!url && !path) || !discoveryUrl || !expectedVersion || !expectedSha256) {
 	throw new Error(
-		"OPENAPI_URL, API_DISCOVERY_URL, API_VERSION, and OPENAPI_SHA256 are required",
+		"OPENAPI_PATH or OPENAPI_URL, plus API_DISCOVERY_URL, API_VERSION, and OPENAPI_SHA256 are required",
 	);
 }
 
 const sleep = (milliseconds: number) =>
 	new Promise((resolve) => setTimeout(resolve, milliseconds));
+
+const readOpenApi = async () => {
+	if (path) {
+		return readFile(path);
+	}
+	const response = await fetch(url as string);
+	if (!response.ok) {
+		throw new Error(`Failed to fetch OpenAPI document: ${response.status}`);
+	}
+	return Buffer.from(await response.arrayBuffer());
+};
 
 let lastError: Error | undefined;
 for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
@@ -49,12 +61,7 @@ for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
 			);
 		}
 
-		const response = await fetch(url);
-		if (!response.ok) {
-			throw new Error(`Failed to fetch OpenAPI document: ${response.status}`);
-		}
-
-		const bytes = Buffer.from(await response.arrayBuffer());
+		const bytes = await readOpenApi();
 		const document = JSON.parse(bytes.toString("utf8")) as {
 			info?: { version?: string };
 		};
