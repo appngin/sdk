@@ -4,6 +4,64 @@ export type ClientOptions = {
     baseUrl: 'https://api.appngin.com' | (string & {});
 };
 
+export type ApiKeyListResponse = {
+    data: Array<ApiKeySummary>;
+    meta: {
+        total: number;
+    };
+};
+
+export type ApiKeySummary = {
+    id: string;
+    name: string;
+    tokenPrefix: string;
+    createdAt: string;
+    lastUsedAt: string | null;
+    expiresAt: string | null;
+    revokedAt: string | null;
+};
+
+export type ApiKeyCreateRequest = {
+    name: string;
+    expiresAt?: string;
+};
+
+export type ApiKeyCreateResponse = {
+    data: {
+        token: string;
+        id: string;
+        name: string;
+        tokenPrefix: string;
+        createdAt: string;
+        lastUsedAt: string | null;
+        expiresAt: string | null;
+        revokedAt: string | null;
+    };
+};
+
+export type MagicLinkRequest = {
+    email: string;
+};
+
+export type MagicLinkResponse = {
+    data: {
+        message: string;
+    };
+};
+
+export type ConsumeMagicLinkRequest = {
+    token: string;
+};
+
+export type AuthUserResponse = {
+    data: AuthUser;
+};
+
+export type AuthUser = {
+    id: string;
+    email: string;
+};
+
 export type CatalogListResponse = {
     data: Array<CatalogListing>;
     meta: {
@@ -54,13 +112,36 @@ export type CatalogItemResponse = {
     data: CatalogListing;
 };
 
+export type PricingResponse = {
+    data: PricingConfig;
+    meta: {
+        revision: number;
+        updatedAt: string;
+    };
+};
+
+export type PricingConfig = {
+    currency: 'EUR';
+    baseMonthlyEurCents: number;
+    memoryEurCentsPer256Mb: number;
+    cpuEurCentsPer100Millicores: number;
+    fastStorageEurCentsPerGb: number;
+    bulkStorageEurCentsPerGb: number;
+    eurToUsdPriceMultiplier: number;
+    roundUpToEurCents: number;
+};
+
 export type DiscoveryResponse = {
     name: string;
     version: string;
     endpoints: {
+        auth: string;
+        me: string;
+        apiKeys: string;
         catalog: string;
         catalogCategories: string;
         catalogItem: string;
+        pricing: string;
         openapi: string;
     };
 };
@@ -167,6 +248,271 @@ export type CatalogFindOneResponses = {
 };
 
 export type CatalogFindOneResponse = CatalogFindOneResponses[keyof CatalogFindOneResponses];
+
+export type PricingGetData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/v1/pricing';
+};
+
+export type PricingGetErrors = {
+    /**
+     * Resource not found
+     */
+    404: ErrorResponse;
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse;
+};
+
+export type PricingGetError = PricingGetErrors[keyof PricingGetErrors];
+
+export type PricingGetResponses = {
+    /**
+     * Successful response
+     */
+    200: PricingResponse;
+};
+
+export type PricingGetResponse = PricingGetResponses[keyof PricingGetResponses];
+
+export type AuthRequestMagicLinkData = {
+    body: MagicLinkRequest;
+    path?: never;
+    query?: never;
+    url: '/v1/auth/magic-link';
+};
+
+export type AuthRequestMagicLinkErrors = {
+    /**
+     * Invalid email address
+     */
+    400: ErrorResponse;
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse;
+};
+
+export type AuthRequestMagicLinkError = AuthRequestMagicLinkErrors[keyof AuthRequestMagicLinkErrors];
+
+export type AuthRequestMagicLinkResponses = {
+    /**
+     * Successful response
+     */
+    200: MagicLinkResponse;
+};
+
+export type AuthRequestMagicLinkResponse = AuthRequestMagicLinkResponses[keyof AuthRequestMagicLinkResponses];
+
+export type AuthConsumeMagicLinkData = {
+    body: ConsumeMagicLinkRequest;
+    path?: never;
+    query?: never;
+    url: '/v1/auth/magic-link/consume';
+};
+
+export type AuthConsumeMagicLinkErrors = {
+    /**
+     * The login link is invalid or expired
+     */
+    401: ErrorResponse;
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse;
+};
+
+export type AuthConsumeMagicLinkError = AuthConsumeMagicLinkErrors[keyof AuthConsumeMagicLinkErrors];
+
+export type AuthConsumeMagicLinkResponses = {
+    /**
+     * Successful response
+     */
+    200: AuthUserResponse;
+};
+
+export type AuthConsumeMagicLinkResponse = AuthConsumeMagicLinkResponses[keyof AuthConsumeMagicLinkResponses];
+
+export type AuthLogoutData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/v1/auth/logout';
+};
+
+export type AuthLogoutErrors = {
+    /**
+     * Authentication is required
+     */
+    401: ErrorResponse;
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse;
+};
+
+export type AuthLogoutError = AuthLogoutErrors[keyof AuthLogoutErrors];
+
+export type AuthLogoutResponses = {
+    /**
+     * Successful response
+     */
+    200: unknown;
+};
+
+export type AuthLogoutAllData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/v1/auth/logout-all';
+};
+
+export type AuthLogoutAllErrors = {
+    /**
+     * Authentication is required
+     */
+    401: ErrorResponse;
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse;
+};
+
+export type AuthLogoutAllError = AuthLogoutAllErrors[keyof AuthLogoutAllErrors];
+
+export type AuthLogoutAllResponses = {
+    /**
+     * Successful response
+     */
+    200: unknown;
+};
+
+export type UsersMeGetData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/v1/users/me';
+};
+
+export type UsersMeGetErrors = {
+    /**
+     * Authentication is required
+     */
+    401: ErrorResponse;
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse;
+};
+
+export type UsersMeGetError = UsersMeGetErrors[keyof UsersMeGetErrors];
+
+export type UsersMeGetResponses = {
+    /**
+     * Successful response
+     */
+    200: AuthUserResponse;
+};
+
+export type UsersMeGetResponse = UsersMeGetResponses[keyof UsersMeGetResponses];
+
+export type ApiKeysListData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/v1/api-keys';
+};
+
+export type ApiKeysListErrors = {
+    /**
+     * Authentication is required
+     */
+    401: ErrorResponse;
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse;
+};
+
+export type ApiKeysListError = ApiKeysListErrors[keyof ApiKeysListErrors];
+
+export type ApiKeysListResponses = {
+    /**
+     * Successful response
+     */
+    200: ApiKeyListResponse;
+};
+
+export type ApiKeysListResponse = ApiKeysListResponses[keyof ApiKeysListResponses];
+
+export type ApiKeysCreateData = {
+    body: ApiKeyCreateRequest;
+    path?: never;
+    query?: never;
+    url: '/v1/api-keys';
+};
+
+export type ApiKeysCreateErrors = {
+    /**
+     * Invalid API-key request
+     */
+    400: ErrorResponse;
+    /**
+     * Authentication is required
+     */
+    401: ErrorResponse;
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse;
+};
+
+export type ApiKeysCreateError = ApiKeysCreateErrors[keyof ApiKeysCreateErrors];
+
+export type ApiKeysCreateResponses = {
+    /**
+     * Successful response
+     */
+    200: ApiKeyCreateResponse;
+};
+
+export type ApiKeysCreateResponse = ApiKeysCreateResponses[keyof ApiKeysCreateResponses];
+
+export type ApiKeysRevokeData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/v1/api-keys/{id}';
+};
+
+export type ApiKeysRevokeErrors = {
+    /**
+     * Authentication is required
+     */
+    401: ErrorResponse;
+    /**
+     * API key not found
+     */
+    404: ErrorResponse;
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse;
+};
+
+export type ApiKeysRevokeError = ApiKeysRevokeErrors[keyof ApiKeysRevokeErrors];
+
+export type ApiKeysRevokeResponses = {
+    /**
+     * Successful response
+     */
+    200: unknown;
+};
 
 export type DiscoverData = {
     body?: never;

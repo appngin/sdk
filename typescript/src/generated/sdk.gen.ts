@@ -2,7 +2,7 @@
 
 import type { Client, ClientMeta, Options as Options2, RequestResult, TDataShape } from './client';
 import { client } from './client.gen';
-import type { CatalogFindOneData, CatalogFindOneErrors, CatalogFindOneResponses, CatalogListCategoriesData, CatalogListCategoriesErrors, CatalogListCategoriesResponses, CatalogListData, CatalogListErrors, CatalogListResponses, DiscoverData, DiscoverErrors, DiscoverResponses, OpenapiLatestData, OpenapiLatestErrors, OpenapiLatestResponses } from './types.gen';
+import type { ApiKeysCreateData, ApiKeysCreateErrors, ApiKeysCreateResponses, ApiKeysListData, ApiKeysListErrors, ApiKeysListResponses, ApiKeysRevokeData, ApiKeysRevokeErrors, ApiKeysRevokeResponses, AuthConsumeMagicLinkData, AuthConsumeMagicLinkErrors, AuthConsumeMagicLinkResponses, AuthLogoutAllData, AuthLogoutAllErrors, AuthLogoutAllResponses, AuthLogoutData, AuthLogoutErrors, AuthLogoutResponses, AuthRequestMagicLinkData, AuthRequestMagicLinkErrors, AuthRequestMagicLinkResponses, CatalogFindOneData, CatalogFindOneErrors, CatalogFindOneResponses, CatalogListCategoriesData, CatalogListCategoriesErrors, CatalogListCategoriesResponses, CatalogListData, CatalogListErrors, CatalogListResponses, DiscoverData, DiscoverErrors, DiscoverResponses, OpenapiLatestData, OpenapiLatestErrors, OpenapiLatestResponses, PricingGetData, PricingGetErrors, PricingGetResponses, UsersMeGetData, UsersMeGetErrors, UsersMeGetResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -32,6 +32,117 @@ export const catalogListCategories = <ThrowOnError extends boolean = false>(opti
  * Get a catalog item
  */
 export const catalogFindOne = <ThrowOnError extends boolean = false>(options: Options<CatalogFindOneData, ThrowOnError>): RequestResult<CatalogFindOneResponses, CatalogFindOneErrors, ThrowOnError> => (options.client ?? client).get<CatalogFindOneResponses, CatalogFindOneErrors, ThrowOnError>({ url: '/v1/catalog/{slug}', ...options });
+
+/**
+ * Get pricing configuration
+ */
+export const pricingGet = <ThrowOnError extends boolean = false>(options?: Options<PricingGetData, ThrowOnError>): RequestResult<PricingGetResponses, PricingGetErrors, ThrowOnError> => (options?.client ?? client).get<PricingGetResponses, PricingGetErrors, ThrowOnError>({ url: '/v1/pricing', ...options });
+
+/**
+ * Request a magic login link
+ */
+export const authRequestMagicLink = <ThrowOnError extends boolean = false>(options: Options<AuthRequestMagicLinkData, ThrowOnError>): RequestResult<AuthRequestMagicLinkResponses, AuthRequestMagicLinkErrors, ThrowOnError> => (options.client ?? client).post<AuthRequestMagicLinkResponses, AuthRequestMagicLinkErrors, ThrowOnError>({
+    url: '/v1/auth/magic-link',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Consume a magic login link
+ */
+export const authConsumeMagicLink = <ThrowOnError extends boolean = false>(options: Options<AuthConsumeMagicLinkData, ThrowOnError>): RequestResult<AuthConsumeMagicLinkResponses, AuthConsumeMagicLinkErrors, ThrowOnError> => (options.client ?? client).post<AuthConsumeMagicLinkResponses, AuthConsumeMagicLinkErrors, ThrowOnError>({
+    url: '/v1/auth/magic-link/consume',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Log out the current session
+ */
+export const authLogout = <ThrowOnError extends boolean = false>(options?: Options<AuthLogoutData, ThrowOnError>): RequestResult<AuthLogoutResponses, AuthLogoutErrors, ThrowOnError> => (options?.client ?? client).post<AuthLogoutResponses, AuthLogoutErrors, ThrowOnError>({
+    security: [{
+            in: 'cookie',
+            name: '__Host-appngin_session',
+            type: 'apiKey'
+        }],
+    url: '/v1/auth/logout',
+    ...options
+});
+
+/**
+ * Log out all sessions
+ */
+export const authLogoutAll = <ThrowOnError extends boolean = false>(options?: Options<AuthLogoutAllData, ThrowOnError>): RequestResult<AuthLogoutAllResponses, AuthLogoutAllErrors, ThrowOnError> => (options?.client ?? client).post<AuthLogoutAllResponses, AuthLogoutAllErrors, ThrowOnError>({
+    security: [{
+            in: 'cookie',
+            name: '__Host-appngin_session',
+            type: 'apiKey'
+        }],
+    url: '/v1/auth/logout-all',
+    ...options
+});
+
+/**
+ * Get the current user
+ */
+export const usersMeGet = <ThrowOnError extends boolean = false>(options?: Options<UsersMeGetData, ThrowOnError>): RequestResult<UsersMeGetResponses, UsersMeGetErrors, ThrowOnError> => (options?.client ?? client).get<UsersMeGetResponses, UsersMeGetErrors, ThrowOnError>({
+    security: [{
+            in: 'cookie',
+            name: '__Host-appngin_session',
+            type: 'apiKey'
+        }, { scheme: 'bearer', type: 'http' }],
+    url: '/v1/users/me',
+    ...options
+});
+
+/**
+ * List API keys
+ */
+export const apiKeysList = <ThrowOnError extends boolean = false>(options?: Options<ApiKeysListData, ThrowOnError>): RequestResult<ApiKeysListResponses, ApiKeysListErrors, ThrowOnError> => (options?.client ?? client).get<ApiKeysListResponses, ApiKeysListErrors, ThrowOnError>({
+    security: [{
+            in: 'cookie',
+            name: '__Host-appngin_session',
+            type: 'apiKey'
+        }],
+    url: '/v1/api-keys',
+    ...options
+});
+
+/**
+ * Create an API key
+ */
+export const apiKeysCreate = <ThrowOnError extends boolean = false>(options: Options<ApiKeysCreateData, ThrowOnError>): RequestResult<ApiKeysCreateResponses, ApiKeysCreateErrors, ThrowOnError> => (options.client ?? client).post<ApiKeysCreateResponses, ApiKeysCreateErrors, ThrowOnError>({
+    security: [{
+            in: 'cookie',
+            name: '__Host-appngin_session',
+            type: 'apiKey'
+        }],
+    url: '/v1/api-keys',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Revoke an API key
+ */
+export const apiKeysRevoke = <ThrowOnError extends boolean = false>(options: Options<ApiKeysRevokeData, ThrowOnError>): RequestResult<ApiKeysRevokeResponses, ApiKeysRevokeErrors, ThrowOnError> => (options.client ?? client).delete<ApiKeysRevokeResponses, ApiKeysRevokeErrors, ThrowOnError>({
+    security: [{
+            in: 'cookie',
+            name: '__Host-appngin_session',
+            type: 'apiKey'
+        }],
+    url: '/v1/api-keys/{id}',
+    ...options
+});
 
 /**
  * Discover API endpoints
