@@ -2,7 +2,7 @@
 	"openapi": "3.1.0",
 	"info": {
 		"title": "AppNgin API",
-		"version": "0.1.1",
+		"version": "0.1.2",
 		"description": "Public API for AppNgin's deployable app catalog.",
 		"license": {
 			"name": "MIT",
@@ -233,8 +233,37 @@
 							}
 						}
 					},
+					"429": {
+						"description": "Email request rate limit or daily send cap reached",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						},
+						"headers": {
+							"Retry-After": {
+								"description": "Seconds to wait before another attempt",
+								"schema": {
+									"type": "integer",
+									"minimum": 1
+								}
+							}
+						}
+					},
 					"500": {
 						"description": "Internal server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"503": {
+						"description": "Email delivery is paused or unavailable",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -425,6 +454,68 @@
 					},
 					{
 						"bearerAuth": []
+					}
+				]
+			},
+			"patch": {
+				"operationId": "usersMeUpdate",
+				"tags": ["Users"],
+				"responses": {
+					"200": {
+						"description": "Successful response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/AuthUserResponse"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Invalid currency",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Authentication is required",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/UpdateCurrencyRequest"
+							}
+						}
+					}
+				},
+				"summary": "Update the current user settings",
+				"security": [
+					{
+						"cookieAuth": []
 					}
 				]
 			}
@@ -842,9 +933,38 @@
 					},
 					"email": {
 						"type": "string"
+					},
+					"currency": {
+						"$ref": "#/components/schemas/Currency"
 					}
 				},
-				"required": ["id", "email"],
+				"required": ["id", "email", "currency"],
+				"additionalProperties": false
+			},
+			"Currency": {
+				"type": "string",
+				"enum": ["EUR", "USD"]
+			},
+			"Context": {
+				"type": "object",
+				"additionalProperties": {
+					"anyOf": [
+						{},
+						{
+							"not": {}
+						}
+					]
+				},
+				"properties": {}
+			},
+			"UpdateCurrencyRequest": {
+				"type": "object",
+				"properties": {
+					"currency": {
+						"$ref": "#/components/schemas/Currency"
+					}
+				},
+				"required": ["currency"],
 				"additionalProperties": false
 			},
 			"CatalogListResponse": {
@@ -925,6 +1045,12 @@
 					"description": {
 						"type": "string"
 					},
+					"homepage": {
+						"type": "string"
+					},
+					"readme": {
+						"type": ["string", "null"]
+					},
 					"pricing": {
 						"type": "object",
 						"properties": {
@@ -958,6 +1084,8 @@
 					"popular",
 					"icon",
 					"description",
+					"homepage",
+					"readme",
 					"pricing"
 				],
 				"additionalProperties": false

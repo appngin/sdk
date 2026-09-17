@@ -2,7 +2,7 @@
 
 import type { Client, ClientMeta, Options as Options2, RequestResult, TDataShape } from './client';
 import { client } from './client.gen';
-import type { ApiKeysCreateData, ApiKeysCreateErrors, ApiKeysCreateResponses, ApiKeysListData, ApiKeysListErrors, ApiKeysListResponses, ApiKeysRevokeData, ApiKeysRevokeErrors, ApiKeysRevokeResponses, AuthConsumeMagicLinkData, AuthConsumeMagicLinkErrors, AuthConsumeMagicLinkResponses, AuthLogoutAllData, AuthLogoutAllErrors, AuthLogoutAllResponses, AuthLogoutData, AuthLogoutErrors, AuthLogoutResponses, AuthRequestMagicLinkData, AuthRequestMagicLinkErrors, AuthRequestMagicLinkResponses, CatalogFindOneData, CatalogFindOneErrors, CatalogFindOneResponses, CatalogListCategoriesData, CatalogListCategoriesErrors, CatalogListCategoriesResponses, CatalogListData, CatalogListErrors, CatalogListResponses, DiscoverData, DiscoverErrors, DiscoverResponses, OpenapiLatestData, OpenapiLatestErrors, OpenapiLatestResponses, PricingGetData, PricingGetErrors, PricingGetResponses, UsersMeGetData, UsersMeGetErrors, UsersMeGetResponses } from './types.gen';
+import type { ApiKeysCreateData, ApiKeysCreateErrors, ApiKeysCreateResponses, ApiKeysListData, ApiKeysListErrors, ApiKeysListResponses, ApiKeysRevokeData, ApiKeysRevokeErrors, ApiKeysRevokeResponses, AuthConsumeMagicLinkData, AuthConsumeMagicLinkErrors, AuthConsumeMagicLinkResponses, AuthLogoutAllData, AuthLogoutAllErrors, AuthLogoutAllResponses, AuthLogoutData, AuthLogoutErrors, AuthLogoutResponses, AuthRequestMagicLinkData, AuthRequestMagicLinkErrors, AuthRequestMagicLinkResponses, CatalogFindOneData, CatalogFindOneErrors, CatalogFindOneResponses, CatalogListCategoriesData, CatalogListCategoriesErrors, CatalogListCategoriesResponses, CatalogListData, CatalogListErrors, CatalogListResponses, DiscoverData, DiscoverErrors, DiscoverResponses, OpenapiLatestData, OpenapiLatestErrors, OpenapiLatestResponses, PricingGetData, PricingGetErrors, PricingGetResponses, UsersMeGetData, UsersMeGetErrors, UsersMeGetResponses, UsersMeUpdateData, UsersMeUpdateErrors, UsersMeUpdateResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -99,6 +99,23 @@ export const usersMeGet = <ThrowOnError extends boolean = false>(options?: Optio
         }, { scheme: 'bearer', type: 'http' }],
     url: '/v1/users/me',
     ...options
+});
+
+/**
+ * Update the current user settings
+ */
+export const usersMeUpdate = <ThrowOnError extends boolean = false>(options: Options<UsersMeUpdateData, ThrowOnError>): RequestResult<UsersMeUpdateResponses, UsersMeUpdateErrors, ThrowOnError> => (options.client ?? client).patch<UsersMeUpdateResponses, UsersMeUpdateErrors, ThrowOnError>({
+    security: [{
+            in: 'cookie',
+            name: '__Host-appngin_session',
+            type: 'apiKey'
+        }],
+    url: '/v1/users/me',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
 });
 
 /**

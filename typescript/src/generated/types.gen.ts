@@ -60,6 +60,17 @@ export type AuthUserResponse = {
 export type AuthUser = {
     id: string;
     email: string;
+    currency: Currency;
+};
+
+export type Currency = 'EUR' | 'USD';
+
+export type Context = {
+    [key: string]: unknown;
+};
+
+export type UpdateCurrencyRequest = {
+    currency: Currency;
 };
 
 export type CatalogListResponse = {
@@ -84,6 +95,8 @@ export type CatalogListing = {
         color: 'base' | 'theme';
     };
     description: string;
+    homepage: string;
+    readme: string | null;
     pricing: {
         monthlyFromEurCents: number;
         note: string;
@@ -291,9 +304,17 @@ export type AuthRequestMagicLinkErrors = {
      */
     400: ErrorResponse;
     /**
+     * Email request rate limit or daily send cap reached
+     */
+    429: ErrorResponse;
+    /**
      * Internal server error
      */
     500: ErrorResponse;
+    /**
+     * Email delivery is paused or unavailable
+     */
+    503: ErrorResponse;
 };
 
 export type AuthRequestMagicLinkError = AuthRequestMagicLinkErrors[keyof AuthRequestMagicLinkErrors];
@@ -418,6 +439,39 @@ export type UsersMeGetResponses = {
 };
 
 export type UsersMeGetResponse = UsersMeGetResponses[keyof UsersMeGetResponses];
+
+export type UsersMeUpdateData = {
+    body: UpdateCurrencyRequest;
+    path?: never;
+    query?: never;
+    url: '/v1/users/me';
+};
+
+export type UsersMeUpdateErrors = {
+    /**
+     * Invalid currency
+     */
+    400: ErrorResponse;
+    /**
+     * Authentication is required
+     */
+    401: ErrorResponse;
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse;
+};
+
+export type UsersMeUpdateError = UsersMeUpdateErrors[keyof UsersMeUpdateErrors];
+
+export type UsersMeUpdateResponses = {
+    /**
+     * Successful response
+     */
+    200: AuthUserResponse;
+};
+
+export type UsersMeUpdateResponse = UsersMeUpdateResponses[keyof UsersMeUpdateResponses];
 
 export type ApiKeysListData = {
     body?: never;
