@@ -2,7 +2,7 @@
 
 import type { Client, ClientMeta, Options as Options2, RequestResult, TDataShape } from './client';
 import { client } from './client.gen';
-import type { ApiKeysCreateData, ApiKeysCreateErrors, ApiKeysCreateResponses, ApiKeysListData, ApiKeysListErrors, ApiKeysListResponses, ApiKeysRevokeData, ApiKeysRevokeErrors, ApiKeysRevokeResponses, AuthConsumeMagicLinkData, AuthConsumeMagicLinkErrors, AuthConsumeMagicLinkResponses, AuthLogoutAllData, AuthLogoutAllErrors, AuthLogoutAllResponses, AuthLogoutData, AuthLogoutErrors, AuthLogoutResponses, AuthRequestMagicLinkData, AuthRequestMagicLinkErrors, AuthRequestMagicLinkResponses, CatalogFindOneData, CatalogFindOneErrors, CatalogFindOneResponses, CatalogListCategoriesData, CatalogListCategoriesErrors, CatalogListCategoriesResponses, CatalogListData, CatalogListErrors, CatalogListResponses, DiscoverData, DiscoverErrors, DiscoverResponses, OpenapiLatestData, OpenapiLatestErrors, OpenapiLatestResponses, PricingGetData, PricingGetErrors, PricingGetResponses, UsersMeGetData, UsersMeGetErrors, UsersMeGetResponses, UsersMeUpdateData, UsersMeUpdateErrors, UsersMeUpdateResponses } from './types.gen';
+import type { ApiKeysCreateData, ApiKeysCreateErrors, ApiKeysCreateResponses, ApiKeysListData, ApiKeysListErrors, ApiKeysListResponses, ApiKeysRevokeData, ApiKeysRevokeErrors, ApiKeysRevokeResponses, AuthConsumeMagicLinkData, AuthConsumeMagicLinkErrors, AuthConsumeMagicLinkResponses, AuthLogoutAllData, AuthLogoutAllErrors, AuthLogoutAllResponses, AuthLogoutData, AuthLogoutErrors, AuthLogoutResponses, AuthRequestMagicLinkData, AuthRequestMagicLinkErrors, AuthRequestMagicLinkResponses, AuthSessionsListData, AuthSessionsListErrors, AuthSessionsListResponses, AuthSessionsRevokeData, AuthSessionsRevokeErrors, AuthSessionsRevokeResponses, CatalogFindOneData, CatalogFindOneErrors, CatalogFindOneResponses, CatalogListCategoriesData, CatalogListCategoriesErrors, CatalogListCategoriesResponses, CatalogListData, CatalogListErrors, CatalogListResponses, DiscoverData, DiscoverErrors, DiscoverResponses, OpenapiLatestData, OpenapiLatestErrors, OpenapiLatestResponses, PricingGetData, PricingGetErrors, PricingGetResponses, UsersMeGetData, UsersMeGetErrors, UsersMeGetResponses, UsersMeUpdateData, UsersMeUpdateErrors, UsersMeUpdateResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -60,6 +60,32 @@ export const authConsumeMagicLink = <ThrowOnError extends boolean = false>(optio
         'Content-Type': 'application/json',
         ...options.headers
     }
+});
+
+/**
+ * List active browser sessions
+ */
+export const authSessionsList = <ThrowOnError extends boolean = false>(options?: Options<AuthSessionsListData, ThrowOnError>): RequestResult<AuthSessionsListResponses, AuthSessionsListErrors, ThrowOnError> => (options?.client ?? client).get<AuthSessionsListResponses, AuthSessionsListErrors, ThrowOnError>({
+    security: [{
+            in: 'cookie',
+            name: '__Host-appngin_session',
+            type: 'apiKey'
+        }],
+    url: '/v1/auth/sessions',
+    ...options
+});
+
+/**
+ * Revoke a browser session
+ */
+export const authSessionsRevoke = <ThrowOnError extends boolean = false>(options: Options<AuthSessionsRevokeData, ThrowOnError>): RequestResult<AuthSessionsRevokeResponses, AuthSessionsRevokeErrors, ThrowOnError> => (options.client ?? client).delete<AuthSessionsRevokeResponses, AuthSessionsRevokeErrors, ThrowOnError>({
+    security: [{
+            in: 'cookie',
+            name: '__Host-appngin_session',
+            type: 'apiKey'
+        }],
+    url: '/v1/auth/sessions/{id}',
+    ...options
 });
 
 /**

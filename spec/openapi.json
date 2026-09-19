@@ -2,7 +2,7 @@
 	"openapi": "3.1.0",
 	"info": {
 		"title": "AppNgin API",
-		"version": "0.1.2",
+		"version": "0.1.3",
 		"description": "Public API for AppNgin's deployable app catalog.",
 		"license": {
 			"name": "MIT",
@@ -335,6 +335,107 @@
 				},
 				"summary": "Consume a magic login link",
 				"security": []
+			}
+		},
+		"/v1/auth/sessions": {
+			"get": {
+				"operationId": "authSessionsList",
+				"tags": ["Auth"],
+				"responses": {
+					"200": {
+						"description": "Successful response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/SessionListResponse"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Authentication is required",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"summary": "List active browser sessions",
+				"security": [
+					{
+						"cookieAuth": []
+					}
+				]
+			}
+		},
+		"/v1/auth/sessions/{id}": {
+			"delete": {
+				"operationId": "authSessionsRevoke",
+				"tags": ["Auth"],
+				"responses": {
+					"200": {
+						"description": "Successful response"
+					},
+					"401": {
+						"description": "Authentication is required",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Session not found",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"summary": "Revoke a browser session",
+				"security": [
+					{
+						"cookieAuth": []
+					}
+				]
 			}
 		},
 		"/v1/auth/logout": {
@@ -944,6 +1045,69 @@
 			"Currency": {
 				"type": "string",
 				"enum": ["EUR", "USD"]
+			},
+			"SessionListResponse": {
+				"type": "object",
+				"properties": {
+					"data": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/SessionSummary"
+						}
+					},
+					"meta": {
+						"type": "object",
+						"properties": {
+							"total": {
+								"type": "number"
+							}
+						},
+						"required": ["total"],
+						"additionalProperties": false
+					}
+				},
+				"required": ["data", "meta"],
+				"additionalProperties": false
+			},
+			"SessionSummary": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string"
+					},
+					"userAgent": {
+						"type": ["string", "null"]
+					},
+					"country": {
+						"type": ["string", "null"]
+					},
+					"regionCode": {
+						"type": ["string", "null"]
+					},
+					"createdAt": {
+						"type": "string"
+					},
+					"lastUsedAt": {
+						"type": ["string", "null"]
+					},
+					"expiresAt": {
+						"type": "string"
+					},
+					"isCurrent": {
+						"type": "boolean"
+					}
+				},
+				"required": [
+					"id",
+					"userAgent",
+					"country",
+					"regionCode",
+					"createdAt",
+					"lastUsedAt",
+					"expiresAt",
+					"isCurrent"
+				],
+				"additionalProperties": false
 			},
 			"Context": {
 				"type": "object",

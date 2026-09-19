@@ -65,6 +65,24 @@ export type AuthUser = {
 
 export type Currency = 'EUR' | 'USD';
 
+export type SessionListResponse = {
+    data: Array<SessionSummary>;
+    meta: {
+        total: number;
+    };
+};
+
+export type SessionSummary = {
+    id: string;
+    userAgent: string | null;
+    country: string | null;
+    regionCode: string | null;
+    createdAt: string;
+    lastUsedAt: string | null;
+    expiresAt: string;
+    isCurrent: boolean;
+};
+
 export type Context = {
     [key: string]: unknown;
 };
@@ -356,6 +374,68 @@ export type AuthConsumeMagicLinkResponses = {
 };
 
 export type AuthConsumeMagicLinkResponse = AuthConsumeMagicLinkResponses[keyof AuthConsumeMagicLinkResponses];
+
+export type AuthSessionsListData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/v1/auth/sessions';
+};
+
+export type AuthSessionsListErrors = {
+    /**
+     * Authentication is required
+     */
+    401: ErrorResponse;
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse;
+};
+
+export type AuthSessionsListError = AuthSessionsListErrors[keyof AuthSessionsListErrors];
+
+export type AuthSessionsListResponses = {
+    /**
+     * Successful response
+     */
+    200: SessionListResponse;
+};
+
+export type AuthSessionsListResponse = AuthSessionsListResponses[keyof AuthSessionsListResponses];
+
+export type AuthSessionsRevokeData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/v1/auth/sessions/{id}';
+};
+
+export type AuthSessionsRevokeErrors = {
+    /**
+     * Authentication is required
+     */
+    401: ErrorResponse;
+    /**
+     * Session not found
+     */
+    404: ErrorResponse;
+    /**
+     * Internal server error
+     */
+    500: ErrorResponse;
+};
+
+export type AuthSessionsRevokeError = AuthSessionsRevokeErrors[keyof AuthSessionsRevokeErrors];
+
+export type AuthSessionsRevokeResponses = {
+    /**
+     * Successful response
+     */
+    200: unknown;
+};
 
 export type AuthLogoutData = {
     body?: never;
